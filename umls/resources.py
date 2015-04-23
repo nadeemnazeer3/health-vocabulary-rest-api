@@ -309,16 +309,23 @@ class ConceptListResource:
         cuis_top.extend(clresource._get_children("C0033909",sab,False))
 
 
-        cui_parent_list = []
+        cui_parent_list = {}
         for key,cui_list in cui_dict.items():
+            cui_parent_list[key] = []
             for item in cui_list:
                 par_list = clresource._get_parent(item['cui'],sab,True)
                 for cui in par_list:
                     for top in cuis_top:
                         if top['cui'] == cui['cui']:
-                            t = (top['terms'][0],cui['cui'],key)
-                            cui_parent_list.append(t)
+                            if key in cui_parent_list:
+                                cui_parent_list[key].append(top['terms'][0])
+                            else:
+                                cui_parent_list[key] = [top['terms'][0]]
+        
+        mesh_top = {}
+        for key,value in cui_parent_list.items():
+            mesh_top[key] = list(set(value))
 
-        cui_parent_list = list(set(cui_parent_list))
 
-        return cui_parent_list
+
+        return mesh_top
