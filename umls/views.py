@@ -266,3 +266,33 @@ def code_det_view(request, code, sab):
         response = request.GET["callback"]+"("+response+")"
 
     return HttpResponse(response)
+
+def concept_bulk_resource_view(request):
+    """Get the parent list for a given list of concepts
+
+    GET /concept_bulk?terms=term1,term2
+    Parameters:
+
+    terms: List of Terms
+
+    """
+    terms = None
+    sab = None
+    partial = None
+
+    if 'terms' in request.GET:
+        terms = request.GET['terms']
+    if 'sab' in request.GET:
+        sab = request.GET['sab']
+    if 'partial' in request.GET:
+        pint = request.GET['partial']
+        if pint == "1":
+            partial = True
+    rterms = ConceptListResource()._get_concepts_bulk(terms,sab,partial)
+
+    # Handle AJAX Requests
+    response = json.dumps(rterms, sort_keys=True)
+    if 'callback' in request.GET:
+        response = request.GET["callback"]+"("+response+")"
+
+    return HttpResponse(response)

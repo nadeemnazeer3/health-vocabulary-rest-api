@@ -28,6 +28,14 @@ class ISA(models.Model):
 	class Meta:
 		db_table = 'ISA'
 
+class ISA_RB(models.Model):
+	""" The expanded ISA_RB table """
+	CHILD_CUI 	= models.CharField(max_length=8, db_index=True)
+	PARENT_CUI 	= models.CharField(max_length=8, db_index=True)
+	SAB 		= models.CharField(max_length=20, db_index=True)
+	class Meta:
+		db_table = 'ISA_RB'
+
 
 """class MRSTY (models.Model):
 	CUI 	= models.CharField(max_length=8)

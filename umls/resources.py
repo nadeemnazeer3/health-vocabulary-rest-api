@@ -1,6 +1,6 @@
 from umls.models import MRCONSO
 from umls.models import MRREL
-from umls.models import ISA
+from umls.models import ISA,ISA_RB
 
 from umls.utils import get_cui
 from umls.utils import get_code
@@ -279,4 +279,45 @@ class ConceptListResource:
                 rconcepts.append(cresource._get(isa.CHILD_CUI))
             else:
                 rconcepts.append(cresource._get(isa.PARENT_CUI))
+
+        # RB relationships
+        if direction == "CHD":
+            isas_rb = ISA_RB.objects.filter(PARENT_CUI=cui)
+        else:
+            isas_rb = ISA_RB.objects.filter(CHILD_CUI=cui)
+        if sab:
+            isas_rb = isas_rb.filter(SAB=sab)
+
+        for isa in isas_rb:
+            if direction == "CHD":
+                rconcepts.append(cresource._get(isa.CHILD_CUI))
+            else:
+                rconcepts.append(cresource._get(isa.PARENT_CUI))
         return rconcepts
+
+    def _get_concepts_bulk(self, terms, sab='MSH', partial=False):
+        terms = terms.split(',')
+        clresource = ConceptListResource()
+        cui_dict = {}
+        for term in terms:
+            cui_dict[term] = clresource._get(term,False,partial)
+
+
+        #[{"concept": "C0012674", "sabs": ["MSH"], "terms": ["Diseases"]}]
+        #[{"concept": "C0033873", "sabs": ["MSH"], "terms": ["Psychiatry"]}]
+        cuis_top = clresource._get_children("C0012674",sab,False)
+        cuis_top.extend(clresource._get_children("C0033873",sab,False))
+
+        cui_parent_list = []
+        for key,cui_list in cui_dict.items():
+            for item in cui_list:
+                par_list = clresource._get_parent(item['cui'],sab,True)
+                for cui in par_list:
+                    for top in cuis_top:
+                        if top['cui'] == cui['cui']:
+                            t = (cui['terms'][0],cui['cui'],key)
+                            cui_parent_list.append(t)
+
+        cui_parent_list = list(set(cui_parent_list))
+
+        return cui_parent_list
