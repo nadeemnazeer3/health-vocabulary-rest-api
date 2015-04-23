@@ -304,9 +304,14 @@ class ConceptListResource:
 
 
         #[{"concept": "C0012674", "sabs": ["MSH"], "terms": ["Diseases"]}]
-        #[{"concept": "C0033873", "sabs": ["MSH"], "terms": ["Psychiatry"]}]
+        #[{"concept": "C0033909", "sabs": ["MSH"], "terms": ["Psychology"]}]
         cuis_top = clresource._get_children("C0012674",sab,False)
-        cuis_top.extend(clresource._get_children("C0033873",sab,False))
+        cuis_top.extend(clresource._get_children("C0033909",sab,False))
+        # cuis_top.extend(clresource._get_children("C0033902",sab,False))
+        # cuis_top.extend(clresource._get_children("C0033908",sab,False))
+        # cuis_top.extend(clresource._get_children("C0033909",sab,False))
+        # cuis_top.extend(clresource._get_children("C0033963",sab,False))
+
 
         cui_parent_list = []
         for key,cui_list in cui_dict.items():
