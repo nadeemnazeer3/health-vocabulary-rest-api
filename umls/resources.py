@@ -204,7 +204,7 @@ class ConceptListResource:
                     FROM `MRREL` rel
                     WHERE
                         rel.cui1 = %s  AND
-                        rel.rel = 'CHD'
+                        rel.rel in ('CHD','RN')
                         """
         if sab:
             query += " AND rel.sab = %s  "
@@ -241,7 +241,7 @@ class ConceptListResource:
                     FROM `MRREL` rel
                     WHERE
                         rel.cui1 = %s  AND
-                        rel.rel = 'PAR'
+                        rel.rel in ('PAR','RB')
                         """
         if sab:
             query += " AND rel.sab = %s  "
@@ -307,10 +307,6 @@ class ConceptListResource:
         #[{"concept": "C0033909", "sabs": ["MSH"], "terms": ["Psychology"]}]
         cuis_top = clresource._get_children("C0012674",sab,False)
         cuis_top.extend(clresource._get_children("C0033909",sab,False))
-        # cuis_top.extend(clresource._get_children("C0033902",sab,False))
-        # cuis_top.extend(clresource._get_children("C0033908",sab,False))
-        # cuis_top.extend(clresource._get_children("C0033909",sab,False))
-        # cuis_top.extend(clresource._get_children("C0033963",sab,False))
 
 
         cui_parent_list = []
@@ -320,7 +316,7 @@ class ConceptListResource:
                 for cui in par_list:
                     for top in cuis_top:
                         if top['cui'] == cui['cui']:
-                            t = (cui['terms'][0],cui['cui'],key)
+                            t = (top['terms'][0],cui['cui'],key)
                             cui_parent_list.append(t)
 
         cui_parent_list = list(set(cui_parent_list))
