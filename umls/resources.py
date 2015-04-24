@@ -295,37 +295,50 @@ class ConceptListResource:
                 rconcepts.append(cresource._get(isa.PARENT_CUI))
         return rconcepts
 
-    def _get_concepts_bulk(self, terms, sab='MSH', partial=False):
-        terms = terms.split(',')
-        clresource = ConceptListResource()
-        cui_dict = {}
-        for term in terms:
-            cui_dict[term] = clresource._get(term,False,partial)
+    # def _get_concepts_bulk(self, terms, sab, partial=False, delimiter=','):
+    #     terms = set(terms.split(delimiter))
+    #     rterms = []
+    #     for term in terms:
+    #         rterms.extend(self._get(term,sab))
+    #     return rterms
+
+    # def _get_parents_bulk(self, cuis, sab, explode=False):
+    #     cuis = set(cuis)
+    #     rterms = []
+    #     for cui in cuis:
+    #         rterms.extend(self._get_parent(cui,sab,explode))
+    #     return rterms
 
 
-        #[{"concept": "C0012674", "sabs": ["MSH"], "terms": ["Diseases"]}]
-        #[{"concept": "C0033909", "sabs": ["MSH"], "terms": ["Psychology"]}]
-        cuis_top = clresource._get_children("C0012674",sab,False)
-        cuis_top.extend(clresource._get_children("C0033909",sab,False))
+    # def _get_concepts_bulk(self, terms, sab='MSH', partial=False):
+    #     terms = terms.split(',')
+    #     clresource = ConceptListResource()
+    #     cui_dict = {}
+    #     for term in terms:
+    #         cui_dict[term] = clresource._get(term,False,partial)
 
 
-        cui_parent_list = {}
-        for key,cui_list in cui_dict.items():
-            cui_parent_list[key] = []
-            for item in cui_list:
-                par_list = clresource._get_parent(item['cui'],sab,True)
-                for cui in par_list:
-                    for top in cuis_top:
-                        if top['cui'] == cui['cui']:
-                            if key in cui_parent_list:
-                                cui_parent_list[key].append(top['terms'][0])
-                            else:
-                                cui_parent_list[key] = [top['terms'][0]]
+    #     #[{"concept": "C0012674", "sabs": ["MSH"], "terms": ["Diseases"]}]
+    #     #[{"concept": "C0033909", "sabs": ["MSH"], "terms": ["Psychology"]}]
+    #     cuis_top = clresource._get_children("C0012674",sab,False)
+    #     cuis_top.extend(clresource._get_children("C0033909",sab,False))
+
+
+    #     cui_parent_list = {}
+    #     for key,cui_list in cui_dict.items():
+    #         cui_parent_list[key] = []
+    #         for item in cui_list:
+    #             par_list = clresource._get_parent(item['cui'],sab,True)
+    #             for cui in par_list:
+    #                 for top in cuis_top:
+    #                     if top['cui'] == cui['cui']:
+    #                         if key in cui_parent_list:
+    #                             cui_parent_list[key].append(top['terms'][0])
+    #                         else:
+    #                             cui_parent_list[key] = [top['terms'][0]]
         
-        mesh_top = {}
-        for key,value in cui_parent_list.items():
-            mesh_top[key] = list(set(value))
+    #     mesh_top = {}
+    #     for key,value in cui_parent_list.items():
+    #         mesh_top[key] = list(set(value))
 
-
-
-        return mesh_top
+    #     return mesh_top
