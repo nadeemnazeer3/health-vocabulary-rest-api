@@ -326,9 +326,12 @@ def concepts_bulk_par_resource_view(request, cui_list):
     cui_list = cui_list.split(',')
     cui_list = set(cui_list)
     
-    rterms = []
+    rterms = {}
     for cui in cui_list:
-        rterms.extend(ConceptListResource()._get_parent(cui,sab,explode))
+        value = ConceptListResource()._get_parent(cui,sab,explode)
+        # Removing duplicates
+        rterms[cui] = { d['cui']:d for d in value }.values()
+        
     # Handle AJAX Requests
     response = json.dumps(rterms, sort_keys=True)
     if 'callback' in request.GET:
