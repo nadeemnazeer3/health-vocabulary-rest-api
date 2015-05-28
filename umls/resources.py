@@ -304,7 +304,7 @@ class HiersResource:
         """ Get HIERS of a cui from a SAB """
         cursor = connection.cursor()
 
-        query_base = """SELECT PTR,AUI
+        query_base = """SELECT PTR,AUI,SAB
                       FROM MRHIER WHERE CUI='%s'"""%cui
         query = query_base
 
@@ -313,23 +313,36 @@ class HiersResource:
 
         cursor.execute(query)
         rhiers = []
+        sab_dict={}
         for row in cursor.fetchall():
             # print MRCONSO.objects.get(AUI=row[1]).STR
+            key = row[2]
+            if key not in sab_dict:
+                sab_dict[key] = [row[0]+"."+row[1]]
+            else:
+                ls = sab_dict[key]
+                ls.append(row[0]+"."+row[1])
+                sab_dict[key] = ls
+                # sab_dict[key].extend(row[0]+"."+row[1])
             rhiers.append(row[0]+"."+row[1])
+        print sab_dict
         aui_dict = {}
         hier_list = []
-        for item in rhiers:
-            hier = ""
-            auis = item.split('.')
-            for aui in auis:
-                if aui not in aui_dict:
-                    aui_dict[aui] = MRCONSO.objects.get(AUI=aui).STR
-                hier = hier+" => "+aui_dict[aui]
-            hier_list.append(hier[4:])
+        for key,ls in sab_dict.items():
+            hier_list = []
+            for item in ls:
+                hier = ""
+                auis = item.split('.')
+                for aui in auis:
+                    if aui not in aui_dict:
+                        aui_dict[aui] = MRCONSO.objects.get(AUI=aui).STR
+                    hier = hier+" => "+aui_dict[aui]
+                hier_list.append(hier[4:])
+            sab_dict[key] = hier_list
 
         # print hier_list
 
-        return hier_list
+        return sab_dict
 
 
     #     cui_parent_list = {}
