@@ -12,6 +12,7 @@ class MRREL (models.Model):
 
 class MRCONSO (models.Model):
 	CUI 	= models.CharField(max_length=8)
+	AUI     = models.CharField(max_length=9)
 	STR 	= models.TextField()
 	CODE 	= models.CharField(max_length=50)
 	LAT 	= models.CharField(max_length=3)
@@ -36,6 +37,13 @@ class ISA_RB(models.Model):
 	class Meta:
 		db_table = 'ISA_RB'
 
+
+class MRHIER (models.Model):
+	CUI 	= models.CharField(max_length=8)
+	PTR 	= models.TextField()
+	SAB 	= models.CharField(max_length=20)
+	class Meta:
+		db_table = 'MRHIER'
 
 """class MRSTY (models.Model):
 	CUI 	= models.CharField(max_length=8)

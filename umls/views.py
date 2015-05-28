@@ -1,10 +1,10 @@
 from django.http import HttpResponse
-
 from umls.resources import CodeResource
 from umls.resources import RelResource
 from umls.resources import MapResource
 from umls.resources import ConceptResource
 from umls.resources import ConceptListResource
+from umls.resources import HiersResource
 
 import json
 
@@ -334,6 +334,30 @@ def concepts_bulk_par_resource_view(request, cui_list):
         
     # Handle AJAX Requests
     response = json.dumps(rterms, sort_keys=True)
+    if 'callback' in request.GET:
+        response = request.GET["callback"]+"("+response+")"
+
+    return HttpResponse(response)
+
+
+def concept_hiers_resource_view(request, cui):
+    """Get the HIERS of cui in sab
+
+    GET /concepts/<cui>/hiers
+
+    Parameters:
+
+    cui: cui
+    sab: Source Vocab
+
+    """
+    print 'hiers'
+    sab = request.GET.get('sab')
+    
+    rhiers = HiersResource()._get_hier(cui, sab)
+
+    # Handle AJAX Requests
+    response = json.dumps(rhiers, sort_keys=True)
     if 'callback' in request.GET:
         response = request.GET["callback"]+"("+response+")"
 

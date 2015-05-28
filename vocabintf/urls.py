@@ -28,6 +28,10 @@ urlpatterns = patterns('',
                        url(r'^concepts/(?P<cui>.+)/synonyms$',
                            'umls.views.concept_synonyms_resource_view'),
 
+                      # Concept HIER View
+                       url(r'^concepts/(?P<cui>.+)/hiers$',
+                           'umls.views.concept_hiers_resource_view'),
+
                        # Concept Resource View
                        url(r'^concepts/(?P<cui>.+)$',
                            'umls.views.concept_resource_view'),
@@ -51,6 +55,8 @@ urlpatterns = patterns('',
                        # Codes Resource View
                        url(r'^codes/(?P<code>.+)/sab/(?P<sab>.+)/$',
                            'umls.views.code_det_view'),
+
+
 
                        url(r'^demo',
                            TemplateView.as_view(template_name="demo.html")),

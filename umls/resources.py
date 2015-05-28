@@ -1,7 +1,7 @@
 from umls.models import MRCONSO
 from umls.models import MRREL
 from umls.models import ISA,ISA_RB
-
+from umls.models import MRHIER
 from umls.utils import get_cui
 from umls.utils import get_code
 from django.db import connection
@@ -295,33 +295,41 @@ class ConceptListResource:
                 rconcepts.append(cresource._get(isa.PARENT_CUI))
         return rconcepts
 
-    # def _get_concepts_bulk(self, terms, sab, partial=False, delimiter=','):
-    #     terms = set(terms.split(delimiter))
-    #     rterms = []
-    #     for term in terms:
-    #         rterms.extend(self._get(term,sab))
-    #     return rterms
+class HiersResource:
+    pass
 
-    # def _get_parents_bulk(self, cuis, sab, explode=False):
-    #     cuis = set(cuis)
-    #     rterms = []
-    #     for cui in cuis:
-    #         rterms.extend(self._get_parent(cui,sab,explode))
-    #     return rterms
+    """ The HIER Resource """
 
+    def _get_hier(self, cui, sab):
+        """ Get HIERS of a cui from a SAB """
+        cursor = connection.cursor()
 
-    # def _get_concepts_bulk(self, terms, sab='MSH', partial=False):
-    #     terms = terms.split(',')
-    #     clresource = ConceptListResource()
-    #     cui_dict = {}
-    #     for term in terms:
-    #         cui_dict[term] = clresource._get(term,False,partial)
+        query_base = """SELECT PTR,AUI
+                      FROM MRHIER WHERE CUI='%s'"""%cui
+        query = query_base
 
+        if sab:
+            query += "AND SAB ='%s'"%sab
 
-    #     #[{"concept": "C0012674", "sabs": ["MSH"], "terms": ["Diseases"]}]
-    #     #[{"concept": "C0033909", "sabs": ["MSH"], "terms": ["Psychology"]}]
-    #     cuis_top = clresource._get_children("C0012674",sab,False)
-    #     cuis_top.extend(clresource._get_children("C0033909",sab,False))
+        cursor.execute(query)
+        rhiers = []
+        for row in cursor.fetchall():
+            # print MRCONSO.objects.get(AUI=row[1]).STR
+            rhiers.append(row[0]+"."+row[1])
+        aui_dict = {}
+        hier_list = []
+        for item in rhiers:
+            hier = ""
+            auis = item.split('.')
+            for aui in auis:
+                if aui not in aui_dict:
+                    aui_dict[aui] = MRCONSO.objects.get(AUI=aui).STR
+                hier = hier+" => "+aui_dict[aui]
+            hier_list.append(hier[4:])
+
+        # print hier_list
+
+        return hier_list
 
 
     #     cui_parent_list = {}
