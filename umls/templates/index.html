@@ -55,14 +55,22 @@
         <article  class="container">
             <div ng-controller="VocabApiCtrl" class="row-fluid">
                 <div class="span3">
+
                     <!--sidebar -->
                     <ul class="nav nav-tabs nav-stacked">
+                     <div>
+                  <label for="user"><b style="color:red">user id</b></label>
+                     <input id="user" class="form-control" type="text" ng-model="user" required="required">
+                     <label for="token"><b style="color:red">token</b></label>
+                     <input id="token" class="form-control" type="text" ng-model="token" required="required">
+                  </div>
                         <li><a href="#api_call"><i class="icon-chevron-right pull-right"></i> Select API Call</a></li>
                         <li><a href="#raw_params"><i class="icon-chevron-right pull-right"></i> Raw Params</a></li>
                         <li><a href="#response_info"><i class="icon-chevron-right pull-right"></i> Response Info</a></li>
                         <li><a href="#api_response"><i class="icon-chevron-right pull-right"></i> API Response</a></li>
                         <li><a href="#web_response"><i class="icon-chevron-right pull-right"></i> Web Response</a></li>
                     </ul><!--/.sidebar -->
+
                 </div><!--/.span3 -->
 
                 <div class="span9">
@@ -77,12 +85,7 @@
                             <p>((api_data.selectedApi.definition))</p>
                   </div>
                   </div>
-                  <div>
-                  <label for="user"><b>user id</b></label>
-                     <input id="user" class="form-control" type="text" ng-model="user" required="required">
-                     <label for="token"><b>token</b></label>
-                     <input id="token" class="form-control" type="text" ng-model="token" required="required">
-                  </div>
+                 
   
 
 

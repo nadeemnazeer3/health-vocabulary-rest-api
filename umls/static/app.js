@@ -3,8 +3,8 @@
       vocabApp.controller('VocabApiCtrl', function ($scope, $http,ngProgress){
         $scope.resourceNames = [{name: "concepts",id:"concepts" },{name: "codes" },{name: "concepts_bulk" }];
         $scope.host="";
-        $scope.user="";
-        $scope.token="";
+        $scope.user="1";
+        $scope.token="469-6bab10bc321b02eef729";
         $scope.api_data ={
         value_sets:{},
         selectedApi:{},
@@ -69,7 +69,7 @@
 
         }
             obj['user'] = this.user;
-            obj['token'] = this.toekn;
+            obj['token'] = this.token;
            if(Object.keys(obj).length>0)
            url = url +"?"+ $.param(obj);
            console.log(Object.keys(obj).length);
