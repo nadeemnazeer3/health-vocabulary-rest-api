@@ -1,0 +1,197 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>health vocab apis explorer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/bootstrap.css">
+    <link href="static/bootstrap-responsive.css" rel="stylesheet">
+    <link href="static/bootstrap-doc.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/jjsonviewer.css">
+    <link rel='stylesheet' href='static/loading-bar.min.css' type='text/css' media='all' />
+       
+    <script src="static/angular.min.js"></script>
+    <script src="static/angular-animate.min.js"></script>
+    <script src="static/loading-bar.min.js"></script>
+
+
+    <style src="static/bower_components/ngprogress/ngProgress.css"></style> 
+    <script src="static/app.js"></script>
+    <script src="static/bower_components/ngprogress/build/ngProgress.js"></script>
+    <script src="static/jquery.min.js"></script>
+    <script type="text/javascript" src="static/jjsonviewer.js"></script>
+    <script type="text/javascript" src="static/bootstrap.min.js"></script>
+
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip(); 
+    });
+    </script>
+  </head>
+  <body ng-app="vocabApp" class="container">
+        <!--navbar -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/explorer">Health Vocab - API Documentation / Usage</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                       
+                           <li class="active"><a href="/accounts/register/" ><b>sign up</b></a></li>
+                            <li><a href="https://github.com/chintanop/health-vocabulary-rest-api" rel="nofollow">github </a></li>
+                           
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        <!--/.navbar -->
+        
+        
+        <article  class="container">
+            <div ng-controller="VocabApiCtrl" class="row-fluid">
+                <div class="span3">
+                    <!--sidebar -->
+                    <ul class="nav nav-tabs nav-stacked">
+                        <li><a href="#api_call"><i class="icon-chevron-right pull-right"></i> Select API Call</a></li>
+                        <li><a href="#raw_params"><i class="icon-chevron-right pull-right"></i> Raw Params</a></li>
+                        <li><a href="#response_info"><i class="icon-chevron-right pull-right"></i> Response Info</a></li>
+                        <li><a href="#api_response"><i class="icon-chevron-right pull-right"></i> API Response</a></li>
+                        <li><a href="#web_response"><i class="icon-chevron-right pull-right"></i> Web Response</a></li>
+                    </ul><!--/.sidebar -->
+                </div><!--/.span3 -->
+
+                <div class="span9">
+                    <div class="doc-content-box">
+
+<!--                     content -->
+                  <div id="api_call">
+                  <h4 class="tree-header class-name">Please select an api call and fill out the mandatory parameters:</h4>
+                  <b><select class="form-control" ng-options="api.name for api in api_data.apis track by api.name" ng-model="api_data.selectedApi" ></select></b>
+
+                  <div class="alert alert-success">
+                            <p>((api_data.selectedApi.definition))</p>
+                  </div>
+                  </div>
+                  <div>
+                  <label for="user"><b>user id</b></label>
+                     <input id="user" class="form-control" type="text" ng-model="user" required="required">
+                     <label for="token"><b>token</b></label>
+                     <input id="token" class="form-control" type="text" ng-model="token" required="required">
+                  </div>
+  
+
+
+  <div id="raw_params" class="params">
+  <form  style="padding-left:40px;" class="form-horizontal">
+  <fieldset>
+      <div ng-repeat="param in api_data.selectedApi.params">
+          <label for="((param.name))"><b>((param.name))</b></label>
+          <div ng-switch on="param.type" class='control-group (( errors[param.name] ? "error" : param.optional ? "success" : "error" ))'>
+              <div ng-switch-when="list">
+              <select id="((param.name))" class="form-control" ng-model="param.value" 
+              ng-options="option as option for option in  api_data.value_sets[0][param.value_set]"
+               ng-init="param_select=param.value"></select><span class="help-block">((param.definition))</span>
+              </div>
+              <div ng-switch-default>
+                <input id="((param.name))" class="form-control" type="text" ng-model="param.value" required="required"><span class="help-block">((param.definition))</span>
+              </div>
+            </div>
+          
+        
+      </div>
+   
+    
+    <button type="submit" ng-click="get_data(api_data.selectedApi.params)" class="btn btn-success">get data</button>
+  </fieldset>
+</form>
+
+    <div class="alert alert-dismissible alert-warning">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <p>params marked red are mandatory and those marked green are optional</p>
+    </div>
+
+  </div>
+
+<br>
+  <div id="raw_params">
+  <div class="col-md-12">
+  <legend>api params(raw)</legend>
+  <div class="alert alert-dismissible alert-info">
+    <br> ((api_data.selectedApi.params))<br>
+    </div>
+    </div>
+  </div>
+<!-- 
+<input type="button" ng-click="get_data(api_data.selectedApi.params)" value="Get Data" class="btn btn-success"> -->
+<!--  <div class="form-horizontal">
+                <fieldset>
+
+                   <div class="form-group" ng-repeat="param in api_data.selectedApi.params">
+                    <label for="((param.name))" class="col-lg-3 control-label">((param.name))</label>
+                    <div class="col-lg-4">
+                      <input type="text" class="form-control" id="((param.name))" placeholder="">
+                    </div>
+                    <label class="col-lg-3 control-label">((param.optional))</label>
+                  </div>
+
+                </fieldset>
+    </div> -->
+<div id="response_info">
+<legend>response info</legend>
+<div class="res">
+    <b>status: </b>((status)),
+    <b>method: </b>((config.method)),
+    <b>url: </b><a href="((config.url))" target="_blank">((config.url))</a>,
+    <b>headers: </b>((config.headers)),
+</div>
+</div>
+<!-- <br>url: ((url)) -->
+<br>
+<div id="api_response" class="api_response">
+  <legend>api response</legend>
+   <div id="jjson" class="jjson well"></div>
+
+</div>
+<div id="web_response" class="web_response">
+  <legend>web response</legend>
+   <iframe height="250" width="100%" ng-src="((url))"> </iframe>
+
+</div>
+<!--                     contend ends -->
+
+
+
+
+                        <div class="shadow-right"> </div><!-- shadow doc-content-box -->
+                    </div><!--/.doc-content-box -->
+
+                </div><!--/.span9 -->
+            </div><!--/.row-fluid -->
+        </article>
+
+
+        
+        
+        <!-- footer -->
+        <footer>
+            <div class="footer">
+                <div class="container">
+                     <ul class="list-unstyled">
+              <li class="pull-right"><a href="#top">back to top</a></li>
+            </ul>
+            
+            <p>powered by <a href="http://appliedinformaticsinc.com/">© Applied Informatics Inc. 2015</a>.</p>
+            <p>source code at <a href="https://github.com/chintanop/health-vocabulary-rest-api" rel="nofollow">github </a><br>
+               feedback/queries : chintan@trialx.com / nadeem@trialx.com
+            </p>
+                </div>
+            </div>
+        </footer><!--/.footer -->
+
+  </body>
+</html>

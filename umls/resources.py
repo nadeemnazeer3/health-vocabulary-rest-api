@@ -144,7 +144,27 @@ class ConceptResource:
         for term in terms:
             rterms.append(term.STR)
         return rterms
-
+    
+    def _get_entry_terms(self, term, sab):
+        """ Get all variant entry terms for a given term"""
+        terms= []
+        codes= []
+        if sab:
+            sablist = sab.split(',')
+            concepts = MRCONSO.objects.filter(STR=term).filter(SAB__in=sablist)
+        else:
+            concepts = MRCONSO.objects.filter(STR=term)
+        
+        for concept in concepts:
+            terms.append((concept.STR))
+            codes.append((concept.CODE,concept.SAB))
+      
+        for code in list(set(codes)):
+            for code in CodeResource()._get_code(code[0],code[1]):
+                terms.append(code['str'])
+       
+        rterms = list(set(terms))
+        return rterms
 
 class ConceptListResource:
 
@@ -256,6 +276,86 @@ class ConceptListResource:
             rterms.append(cresource._get(cui=row[0]))
 
         return rterms
+    
+    def _get_parent2(self, cui, sab, explode=False):
+        """ Get parents of a given cui using MRHIER
+
+            Parameters:
+                    cui: concept
+                    sab: terminology to restrict the hierarchy
+                    explode: if true, get recursively all parents
+            Returns:
+                    List of Concept objects
+        """
+
+        cursor = connection.cursor()
+
+        query = """SELECT
+                    PTR,AUI,SAB,PAUI
+                    FROM `MRHIER`
+                    WHERE
+                        cui = %s
+                        """
+        if sab:
+            query += " AND sab = %s  "
+            cursor.execute(query, [cui, sab])
+        else:
+            cursor.execute(query, [cui])
+
+        rterms = []
+
+        cresource = ConceptResource()
+        for row in cursor.fetchall():
+            if explode:
+                auis = row[0].split('.')
+            else:
+                auis = row[3].split('.')
+            print auis
+            for aui in auis:
+                # print aui
+                cui = MRCONSO.objects.get(AUI=aui).CUI
+                rterms.append(cresource._get(cui=cui))
+        print len(rterms)
+
+        return rterms
+
+    def _get_children2(self, cui, sab, explode=False):
+        """ Get parents of a given cui using MRHIER
+
+            Parameters:
+                    cui: concept
+                    sab: terminology to restrict the hierarchy
+                    explode: if true, get recursively all parents
+            Returns:
+                    List of Concept objects
+        """
+
+        cursor = connection.cursor()
+
+        query = """SELECT PTR_NEW,AUI,SAB,PAUI from MRHIER inner join(SELECT CONCAT(PTR, '.', AUI) as PTR_NEW FROM umls.MRHIER where cui=%s) as s on s. PTR_NEW = PTR
+                        """
+        if sab:
+            query += " WHERE sab = %s  "
+            cursor.execute(query, [cui, sab])
+        else:
+            cursor.execute(query, [cui])
+
+        rterms = []
+
+        cresource = ConceptResource()
+        for row in cursor.fetchall():
+            if explode:
+                auis = row[0].split('.')
+            else:
+                auis = row[1].split('.')
+            list(set(auis))
+            for aui in auis:
+                # print aui
+                cui = MRCONSO.objects.get(AUI=aui).CUI
+                rterms.append(cresource._get(cui=cui))
+        print len(rterms)
+        
+        return rterms
 
     def _get_exploded_hierarchy(self, cui, sab, direction):
         """ Get exploded hierarchy
@@ -344,22 +444,3 @@ class HiersResource:
 
         return sab_dict
 
-
-    #     cui_parent_list = {}
-    #     for key,cui_list in cui_dict.items():
-    #         cui_parent_list[key] = []
-    #         for item in cui_list:
-    #             par_list = clresource._get_parent(item['cui'],sab,True)
-    #             for cui in par_list:
-    #                 for top in cuis_top:
-    #                     if top['cui'] == cui['cui']:
-    #                         if key in cui_parent_list:
-    #                             cui_parent_list[key].append(top['terms'][0])
-    #                         else:
-    #                             cui_parent_list[key] = [top['terms'][0]]
-        
-    #     mesh_top = {}
-    #     for key,value in cui_parent_list.items():
-    #         mesh_top[key] = list(set(value))
-
-    #     return mesh_top

@@ -1,0 +1,121 @@
+[{      "header":[{"host":"http://localhost:8000/"}],
+        "value_sets":[{"sabs": ["PSY","MTH","SNOMEDCT_US","ICD10AM","ICD10","CHV","SNM","SNMI","CST","WHO","RCD","NCI_FDA","NCI_CDISC","AOD","MEDCIN","MDR","NCI","ICPC2P","LCH","LNC","MEDLINEPLUS","LCH_NW","MSH","CCPSS","DXP","NCI_NCI-GLOSS","PDQ","CSP","ICD10CM","AIR","COSTAR","BI","ICPC2EENG","CCS","RCDSY","ICD9CM","RCDAE","ICPC2ICD10ENG","NCI_NICHD","MTHICD9"],"partial":["1","0"],"explode":["1","0"]
+        ,"rel_type":["IR","KDD","HUB"]}],
+        "data":[{
+        "name": "GET /concepts",
+        "resource": "concepts",
+        "semantic_url": "",
+        "definition": "Search concepts by term and source terminology (SAB)",
+        "params":[
+                {"name": "term","value": "","optional": false,"query_param":true, "type": "string", "definition":"Any source medical term, e.g. diabetes"}, 
+                {"name": "sabs","value": "", "optional": true,"query_param":true, "type": "list", "definition":"A comma separated list of source vocabularies to restrict the concepts","value_set":"sabs"}, 
+                {"name": "partial", "value": "0", "optional": true,"query_param":true,"type": "list", "definition":"1/0 (if partial=1 then term will be partial term matches will be returned. if partial =0 then all matches will be returned. default =0)","value_set":"partial"}
+                ]
+                
+        },{
+        "name": "GET /concepts_bulk",
+        "resource": "concepts_bulk",
+        "semantic_url": "",
+        "definition": "Search concepts by terms in bulk and source terminology (SAB)",
+        "params":[
+                {"name": "terms","value": "","optional": false,"query_param":true, "type": "string", "definition":"A delimiter separate list of terms"}, 
+                {"name": "sabs","value": "", "optional": true,"query_param":true, "type": "list", "definition":"A comma separated list of source vocabularies to restrict the concepts","value_set":"sabs"}, 
+                {"name": "partial", "value": "0", "optional": true,"query_param":true,"type": "list", "definition":"1/0 (if partial=1 then term will be partial term matches will be returned. if partial =0 then all matches will be returned. default =0)","value_set":"partial"},
+                {"name": "delimiter", "value": ",", "optional": true,"query_param":true,"type": "string", "definition":"delimiter which separates the terms, default is comma(,)"}
+                ]
+                
+        },{
+        "name": "GET /concepts/:cui",
+        "resource": "concepts",
+        "semantic_url": "/:cui",
+        "definition": "Get full details for a concept (specified by CUI)",
+        "params":[
+                {"name": "cui","value": "","optional": false, "query_param":false,"type": "string", "definition":"concept id"}]
+        },{
+        "name": "GET /concepts/:cui/children",
+        "resource": "concepts",
+        "semantic_url": "/:cui/children",
+        "definition": "Get all childrens for a given concept. By default it will get all childrens based on UMLS (REL=CHD) or the relationships can be restricted a given vocabulary",
+        "params":[
+                {"name": "cui","value": "","optional": false, "query_param":false, "type": "string", "definition":"concept id"},
+                {"name": "sabs","value": "","optional": true,"query_param":true, "type": "list", "definition":"The source vocabs to restrict the child definition. Currently supported: MeSH and SNOMEDCT","value_set":"sabs"}, 
+                {"name": "explode","value": "", "optional": true,"query_param":true, "type": "list", "definition":"1/0 - if set to 1 then get all children recursively. Currently supported vocabularies: MeSH","value_set":"partial"}
+        ]
+        },{
+        "name": "GET /concepts/:cui/parents",
+        "resource": "concepts",
+        "semantic_url": "/:cui/parents",
+        "definition": "Get all parents for a given concept. By default it will get all parents based on UMLS (REL=PAR) or the relationships can be restricted a given vocabulary",
+        "params":[
+                {"name": "cui","value": "","optional": false, "query_param":false, "type": "string", "definition":"concept id"},
+                {"name": "sabs","value": "","optional": true,"query_param":true, "type": "list", "definition":"The source vocabs to restrict the parent definition","value_set":"sabs"}, 
+                {"name": "explode","value": "", "optional": true,"query_param":true, "type": "list", "definition":"1/0 - if set to 1 then get all parents recursively. Currently supported vocabularies: MeSH","value_set":"explode"}
+        ]
+        },{
+        "name": "GET /concepts_bulk/:cui,:cui,:cui/parents",
+        "resource": "concepts_bulk",
+        "semantic_url": "/:cui list/parents",
+        "definition": "Get all parents for a given list of concepts. By default it will get all parents based on UMLS (REL=PAR,RB) or the relationships can be restricted a given vocabulary",
+        "params":[
+                {"name": "cui list","value": "","optional": false, "query_param":false, "type": "string", "definition":"comma seperated list of concept ids"},
+                {"name": "sabs","value": "","optional": true,"query_param":true, "type": "list", "definition":"The source vocabs to restrict the parent definition","value_set":"sabs"}, 
+                {"name": "explode","value": "", "optional": true,"query_param":true, "type": "list", "definition":"1/0 - if set to 1 then get all parents recursively. Currently supported vocabularies: MeSH","value_set":"explode"}
+        ]
+        },{
+        "name": "GET /concepts/:cui/synonyms",
+        "resource": "concepts",
+        "semantic_url": "/:cui/synonyms",
+        "definition": "Get all synonym strings for a given Concept (:cui). Optionally, restrict the synonyms to a list of vocabularies.",
+        "params":[
+                {"name": "cui","value": "","optional": false, "query_param":false, "type": "string", "definition":"concept id"},
+                {"name": "sab","value": "","optional": true,"query_param":true, "type": "list", "definition":"A List of source vocabularies","value_set":"sabs"}
+        ]
+        },{
+        "name": "GET /concepts/:cui/relationships/:rel_type",
+        "resource": "concepts",
+        "semantic_url": "/:cui/relationships/:rel_type",
+        "definition": "Get all relationships for a given concept",
+        "params":[
+                {"name": "cui","value": "","optional": false,"query_param":false, "type": "string", "definition":"concept id"}, 
+                {"name": "rel_type","value": "", "optional": false,"query_param":false, "type": "list", "definition":"The relationship types, IR: The relationship necessary for information retrieval,KDD: The relationships necessary for knowledge discovery,HUB: Only the “hubs” concepts","value_set":"rel_type"},
+                {"name": "degree","value": "","optional": true,"query_param":true, "type": "string", "definition":"Control the number of hops in the graph"}
+        ]
+        },{
+        "name": "GET /codes",
+        "resource": "codes",
+        "semantic_url": "",
+        "definition": "Search all codes",
+        "params":[
+                {"name": "code","value": "","optional": false,"query_param":true, "type": "string", "definition":"Search for a given code"}, 
+                {"name": "sab","value": "", "optional": true,"query_param":true, "type": "list", "definition":"Restrict the search a given set of vocabularies","value_set":"sabs"}
+                ]
+        },{
+        "name": "GET /codes/:code/sab/:sab",
+        "resource": "codes",
+        "semantic_url": "/:code/sab/:sab",
+        "definition": "Get details about a code",
+        "params":[
+                {"name": "code","value": "","optional": false,"query_param":false, "type": "string", "definition":"Get details about a code"}, 
+                {"name": "sab","value": "", "optional": false,"query_param":false, "type": "list", "definition":"In a given source vocabulary","value_set":"sabs"}
+        ]
+        },{
+        "name": "GET /codes/:code1/sab/:sab1/mapping/:sab2",
+        "resource": "map",
+        "semantic_url": "/:code1/:sab1/mapping/:sab2",
+        "definition": "Get semantically equivalent mappings for code1 in sab1 in sab2",
+        "params":[
+                {"name": "code1","value": "","optional": false,"query_param":false, "type": "string", "definition":"Get details about a code"}, 
+                {"name": "sab1","value": "", "optional": false,"query_param":false, "type": "list", "definition":"In a given source vocabulary","value_set":"sabs"},
+                {"name": "sab2","value": "", "optional": false,"query_param":false, "type": "list", "definition":"The target vocabulary to find a code in","value_set":"sabs"}
+        ]
+        },{
+        "name": "GET /concepts/:cui/hiers",
+        "resource": "concepts",
+        "semantic_url": "/:cui/hiers",
+        "definition": "Get all ancestor_trees for a given concept. It will get all ancestor_trees based on UMLS (MRREL). These can be restricted to a given vocabulary",
+        "params":[
+                {"name": "cui","value": "","optional": false,"query_param":false, "type": "string", "definition":"Get details about a code"}, 
+                {"name": "sab","value": "", "optional": true,"query_param":true, "type": "list", "definition":"from a given source vocabulary","value_set":"sabs"}
+        ]
+        }
+]}]

@@ -1,8 +1,11 @@
 from django.conf.urls import patterns, include, url
 
 from django.views.generic import TemplateView
-
+from django.contrib import admin
+admin.autodiscover()
 urlpatterns = patterns('',
+                      (r'^admin/', include(admin.site.urls)),
+                      (r'', include('tokenapi.urls')),
 
                        # Code Resource View
                        url(r'^code/(?P<vocab>.+)/(?P<code_val>.+)/$',
@@ -27,6 +30,10 @@ urlpatterns = patterns('',
                        # Concept Parent View
                        url(r'^concepts/(?P<cui>.+)/synonyms$',
                            'umls.views.concept_synonyms_resource_view'),
+
+                       # Concept Parent View
+                       url(r'^concepts/entry_terms$',
+                           'umls.views.concept_entry_terms_resource_view'),
 
                       # Concept HIER View
                        url(r'^concepts/(?P<cui>.+)/hiers$',
@@ -56,8 +63,15 @@ urlpatterns = patterns('',
                        url(r'^codes/(?P<code>.+)/sab/(?P<sab>.+)/$',
                            'umls.views.code_det_view'),
 
-
+                       url(r'^new$',
+                           'umls.views.new_index'),
 
                        url(r'^demo',
                            TemplateView.as_view(template_name="demo.html")),
+                       # Registration URLs
+                      url(r'^accounts/register/$', 'umls.views.register', name='register'),
+                      url(r'^accounts/register/complete/$', 'umls.views.registration_complete', name='registration_complete'),
+                      url(r'^explorer',
+                        TemplateView.as_view(template_name="index.html")),
+
                        )

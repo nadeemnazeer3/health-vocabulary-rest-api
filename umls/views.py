@@ -5,8 +5,17 @@ from umls.resources import MapResource
 from umls.resources import ConceptResource
 from umls.resources import ConceptListResource
 from umls.resources import HiersResource
-
+from tokenapi.decorators import token_required
+from tokenapi.http import JsonResponse, JsonError
+from tokenapi.views import token_new
+from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
+from django.contrib.auth.forms import UserCreationForm
+from django.core.context_processors import csrf
 import json
+import requests
+from django.shortcuts import render
+from umls.forms import RegistrationForm
 
 
 def code_resource_view(request, vocab, code_val):
@@ -106,7 +115,7 @@ def concept_resource_view(request, cui):
 
     return HttpResponse(response)
 
-
+# @token_required
 def concept_term_resource_view(request):
     """Get the full display name of a code for a given concept
 
@@ -159,7 +168,7 @@ def concept_child_resource_view(request, cui):
     if eint and eint == "1":
         explode = True
 
-    rterms = ConceptListResource()._get_children(cui, sab, explode)
+    rterms = ConceptListResource()._get_children2(cui, sab, explode)
 
     # Handle AJAX Requests
     response = json.dumps(rterms, sort_keys=True)
@@ -358,6 +367,65 @@ def concept_hiers_resource_view(request, cui):
 
     # Handle AJAX Requests
     response = json.dumps(rhiers, sort_keys=True)
+    if 'callback' in request.GET:
+        response = request.GET["callback"]+"("+response+")"
+
+    return HttpResponse(response)
+
+@token_required
+def new_index(request):
+    if request.method == 'POST':
+        data = {
+            'test1': 49,
+            'test2': 'awesome',
+        }
+        return JsonResponse(data)
+    else:
+        return JsonError("Only POST is allowed")
+
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            url = 'http://'+request.META['HTTP_HOST']+'/token/new.json'
+            data = {'username': request.POST['username'],'password':request.POST['password1']}
+            headers = {'Content-Type': 'application/json'}
+            r = requests.post(url, data=data)
+            request.session['token_data'] = r.json()
+            return HttpResponseRedirect('/accounts/register/complete')
+
+    else:
+        print 
+        form = RegistrationForm()
+    token = {}
+    token.update(csrf(request))
+    token['form'] = form
+
+    return render_to_response('registration/registration_form.html', token)
+
+def registration_complete(request):
+    token_data = request.session.get('token_data')
+    return render(request, 'registration/registration_complete.html', {'token_data': token_data})
+
+def concept_entry_terms_resource_view(request):
+    """Get variant entry terms for a given term
+
+    GET /concepts/entry_terms?term=term
+    Parameters:
+
+    str: Term
+
+    """
+    term = None
+    sab = request.GET.get('sab')
+    if 'term' in request.GET:
+        term = request.GET['term']
+    rterms = ConceptResource()._get_entry_terms(term,sab)
+
+    # Handle AJAX Requests
+    response = json.dumps(rterms, sort_keys=True)
     if 'callback' in request.GET:
         response = request.GET["callback"]+"("+response+")"
 

@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>health vocab apis explorer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap.css">
+    <link href="/static/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/static/bootstrap-doc.css" rel="stylesheet">
+
+  </head>
+  <body  class="container">
+        <!--navbar -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/explorer">Health Vocab - API Documentation / Usage</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                            <li><a href="https://github.com/chintanop/health-vocabulary-rest-api" rel="nofollow">github </a></li>
+                           
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        <!--/.navbar -->
+        
+        
+        <article  class="container">
+            <div  class="row-fluid">
+            <div class="span12">
+
+   <h2>Thank you for Registering</h2>
+  <h4>Please note down your access paramaters.</h4>
+  <p>
+    <b>user:</b> {{token_data.user}} <br>
+    <b>token:</b> {{token_data.token}}
+  </p>
+  <p>
+    Now you can access any API by sending a request to it, and including user and token as request parameters (either GET or POST). Accessing the api(s) using curl might look like:
+    <br><br><pre>curl -d "user={{token_data.user}}&token={{token_data.token}}" http://23.239.3.60/concepts?term=cancer</pre>
+    <br>
+    <br>or in browser:
+    <pre>
+    <a href="http://23.239.3.60/concepts?term=cancer&user={{token_data.user}}&token={{token_data.token}}">http://23.239.3.60/concepts?term=cancer&user={{token_data.user}}&token={{token_data.token}}</a></pre>
+  </p>
+   </div>
+            </div><!--/.row-fluid -->
+        </article>
+
+
+        
+        
+        <!-- footer -->
+        <footer>
+            <div class="footer">
+                <div class="container">
+                     <ul class="list-unstyled">
+              <li class="pull-right"><a href="#top">back to top</a></li>
+            </ul>
+            
+            <p>powered by <a href="http://appliedinformaticsinc.com/">© Applied Informatics Inc. 2015</a>.</p>
+            <p>source code at <a href="https://github.com/chintanop/health-vocabulary-rest-api" rel="nofollow">github </a><br>
+               feedback/queries : chintan@trialx.com / nadeem@trialx.com
+            </p>
+                </div>
+            </div>
+        </footer><!--/.footer -->
+
+  </body>
+</html>
