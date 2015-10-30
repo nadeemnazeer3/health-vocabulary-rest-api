@@ -149,18 +149,39 @@ class ConceptResource:
         """ Get all variant entry terms for a given term"""
         terms= []
         codes= []
-        if sab:
-            sablist = sab.split(',')
-            concepts = MRCONSO.objects.filter(STR=term).filter(SAB__in=sablist)
-        else:
-            concepts = MRCONSO.objects.filter(STR=term)
-        
+        concepts = ConceptListResource()._get(term,"")
+        synonyms = []
+        cuis = set()
         for concept in concepts:
+            cuis.add(concept['cui'])
+        cuis2 = set()
+        for cui in cuis:
+            sy = MRREL.objects.filter(CUI1=cui).filter(REL='SY')
+            for c in sy:
+                cuis2.add(c.CUI2)
+        # print cuis.difference(cuis2)
+        print cuis
+        print cuis2
+        cuis3 = cuis.union(cuis2)
+
+        for cui in cuis3:
+            if sab:
+                synonyms.extend(MRCONSO.objects.filter(CUI=cui).filter(SAB=sab))
+            else:
+                synonyms.extend(MRCONSO.objects.filter(CUI=cui))
+        # print synonyms
+
+
+
+
+        # print ConceptListResource._get(term)
+        
+        for concept in synonyms:
             terms.append((concept.STR))
             codes.append((concept.CODE,concept.SAB))
       
-        for code in list(set(codes)):
-            for code in CodeResource()._get_code(code[0],code[1]):
+        for co in list(set(codes)):
+            for code in CodeResource()._get_code(co[0],co[1]):
                 terms.append(code['str'])
        
         rterms = list(set(terms))

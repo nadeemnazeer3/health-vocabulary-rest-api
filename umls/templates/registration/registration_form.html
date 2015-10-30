@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static/bootstrap.css">
     <link href="/static/bootstrap-responsive.css" rel="stylesheet">
     <link href="/static/bootstrap-doc.css" rel="stylesheet">
+<script src="/static/jquery.min.js"></script>
 
   </head>
   <body  class="container">
@@ -31,7 +32,7 @@
         <!--/.navbar -->
         
         
-        <article  class="container">
+        <article  class="doc-content-box">
             <div  class="row-fluid">
             <div class="span12">
 
@@ -66,4 +67,10 @@
         </footer><!--/.footer -->
 
   </body>
+  <script>
+    $(document).ready(function(){
+       
+        $('.helptext').addClass('help-block');
+    });
+    </script>
 </html>

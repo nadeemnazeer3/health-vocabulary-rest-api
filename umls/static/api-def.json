@@ -1,13 +1,13 @@
-[{      "header":[{"host":"http://localhost:8000/"}],
-        "value_sets":[{"sabs": ["PSY","MTH","SNOMEDCT_US","ICD10AM","ICD10","CHV","SNM","SNMI","CST","WHO","RCD","NCI_FDA","NCI_CDISC","AOD","MEDCIN","MDR","NCI","ICPC2P","LCH","LNC","MEDLINEPLUS","LCH_NW","MSH","CCPSS","DXP","NCI_NCI-GLOSS","PDQ","CSP","ICD10CM","AIR","COSTAR","BI","ICPC2EENG","CCS","RCDSY","ICD9CM","RCDAE","ICPC2ICD10ENG","NCI_NICHD","MTHICD9"],"partial":["1","0"],"explode":["1","0"]
-        ,"rel_type":["IR","KDD","HUB"]}],
+[{      "header":[{"host":"http://23.239.3.60/"}],
+        "value_sets":[{"sabs": ["","PSY","MTH","SNOMEDCT_US","ICD10AM","ICD10","CHV","SNM","SNMI","CST","WHO","RCD","NCI_FDA","NCI_CDISC","AOD","MEDCIN","MDR","NCI","ICPC2P","LCH","LNC","MEDLINEPLUS","LCH_NW","MSH","CCPSS","DXP","NCI_NCI-GLOSS","PDQ","CSP","ICD10CM","AIR","COSTAR","BI","ICPC2EENG","CCS","RCDSY","ICD9CM","RCDAE","ICPC2ICD10ENG","NCI_NICHD","MTHICD9"],"partial":["","1","0"],"explode":["","1","0"]
+        ,"rel_type":["","IR","KDD","HUB"]}],
         "data":[{
         "name": "GET /concepts",
         "resource": "concepts",
         "semantic_url": "",
         "definition": "Search concepts by term and source terminology (SAB)",
         "params":[
-                {"name": "term","value": "","optional": false,"query_param":true, "type": "string", "definition":"Any source medical term, e.g. diabetes"}, 
+                {"name": "term","value": "","optional": false,"query_param":true, "type": "string", "definition":"Any source medical term, e.g. cancer"}, 
                 {"name": "sabs","value": "", "optional": true,"query_param":true, "type": "list", "definition":"A comma separated list of source vocabularies to restrict the concepts","value_set":"sabs"}, 
                 {"name": "partial", "value": "0", "optional": true,"query_param":true,"type": "list", "definition":"1/0 (if partial=1 then term will be partial term matches will be returned. if partial =0 then all matches will be returned. default =0)","value_set":"partial"}
                 ]
@@ -107,15 +107,6 @@
                 {"name": "code1","value": "","optional": false,"query_param":false, "type": "string", "definition":"Get details about a code"}, 
                 {"name": "sab1","value": "", "optional": false,"query_param":false, "type": "list", "definition":"In a given source vocabulary","value_set":"sabs"},
                 {"name": "sab2","value": "", "optional": false,"query_param":false, "type": "list", "definition":"The target vocabulary to find a code in","value_set":"sabs"}
-        ]
-        },{
-        "name": "GET /concepts/:cui/hiers",
-        "resource": "concepts",
-        "semantic_url": "/:cui/hiers",
-        "definition": "Get all ancestor_trees for a given concept. It will get all ancestor_trees based on UMLS (MRREL). These can be restricted to a given vocabulary",
-        "params":[
-                {"name": "cui","value": "","optional": false,"query_param":false, "type": "string", "definition":"Get details about a code"}, 
-                {"name": "sab","value": "", "optional": true,"query_param":true, "type": "list", "definition":"from a given source vocabulary","value_set":"sabs"}
         ]
         }
 ]}]
